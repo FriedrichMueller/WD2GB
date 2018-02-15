@@ -1,7 +1,7 @@
 # WD2GB (Wikidata to Geo-Browser)
 
 
-Query Wikidata with SPARQL - Reuse your data within the DARIAH-Storage and explore spatio-temporal relations with the Geo-Browser.
+Query Wikidata with SPARQL - Reuse your data with the DARIAH-Storage-Service and explore spatio-temporal relations with the Geo-Browser.
 
 Related topics:
 * Query-builder
