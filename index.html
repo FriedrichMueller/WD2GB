@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+ <script src="wikidata-sdk.js"></script>
+
+ <!--<script
+			  src="http://code.jquery.com/jquery-3.3.1.js"
+			  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+			  crossorigin="anonymous">
+</script>-->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+</head>
+<body>
+
+<h1>Start your query</h1>
+<form >
+ <textarea  id="SQLquery" style="width: 600px;height:150px"></textarea>
+
+</form>
+
+  <button onclick="execute();">Get the results</button>
+
+<script>
+const authorQid = 'Q535'
+/*const sparql = `
+SELECT ?work ?date WHERE {
+  ?work wdt:P50 wd:${authorQid} .
+  OPTIONAL {
+    ?work wdt:P577 ?date .
+  }
+}
+`
+const sparql= `SELECT DISTINCT ?item ?itemLabel ?coords ?image
+WHERE {
+	?item wdt:P31 wd: ;
+          wdt:P17 wd:Q20 ;
+          wdt:P625 ?coords
+	OPTIONAL { ?item wdt:P18 ?image }
+	SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],nb,nn,en,fi"  }
+}
+ORDER BY ?itemLabel`
+*/
+
+$('#SQLquery').val("SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?inception) as ?TimeStamp)"+
+"WHERE {"+
+  "SERVICE wikibase:label {"+
+    "bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"."+
+    "?band rdfs:label ?Name ."+
+    "?band schema:description ?Description ."+
+    "?place rdfs:label ?Address."+
+  "}"+
+  "?band wdt:P136 wd:Q3071."+
+  "?band wdt:P31 wd:Q215380."+
+  "?band wdt:P740 ?place."+
+  "?place p:P625 ?coordinate."+
+  "?coordinate psv:P625 ?coordinate_node."+
+  "?coordinate_node wikibase:geoLatitude ?Latitude."+
+  "?coordinate_node wikibase:geoLongitude ?Longitude."+
+  "?band wdt:P571 ?inception."+
+
+"}");
+
+function execute (){
+
+const sparql= $('#SQLquery').val();
+console.log(sparql+"sparql");
+/*const sparql= `SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?inception) as ?TimeStamp)
+WHERE {
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en".
+    ?band rdfs:label ?Name .
+    ?band schema:description ?Description .
+    ?place rdfs:label ?Address.
+  }
+  ?band wdt:P136 wd:Q3071.
+  ?band wdt:P31 wd:Q215380.
+  ?band wdt:P740 ?place.
+  ?place p:P625 ?coordinate.
+  ?coordinate psv:P625 ?coordinate_node.
+  ?coordinate_node wikibase:geoLatitude ?Latitude.
+  ?coordinate_node wikibase:geoLongitude ?Longitude.
+  ?band wdt:P571 ?inception.
+
+
+}`*/
+
+
+  const url = wdk.sparqlQuery(sparql)
+  //console.log(url);
+
+
+
+function Get(yourUrl){
+    var Httpreq = new XMLHttpRequest(); // a new request
+    Httpreq.open("GET",yourUrl,false);
+    Httpreq.send(null);
+    return Httpreq.responseText;
+}
+
+var json_obj = JSON.parse(Get(url));
+console.log(json_obj);
+
+/// write to file
+var txtFile = "c:/fm/Projekte/SUB/Wikidata/Prototyp/test.txt";
+
+
+
+
+
+
+
+
+
+
+
+//let csvContent = "data:text/csv;charset=utf-8,";
+let csvContent = "";
+csvContent +="Name,Address,Description,Longitude,Latitude,TimeStamp"+ "\r\n";
+for (i = 0; i < json_obj.results.bindings.length/50; i++) {
+//console.log(json_obj.results);
+//csvContent +=json_obj.results.bindings[i].itemLabel.value+","+json_obj.results.bindings[i].coords.value+ "\r\n";
+  csvContent +=json_obj.results.bindings[i].Name.value+","+json_obj.results.bindings[i].Address.value+","+"-"+","+json_obj.results.bindings[i].Longitude.value+","+json_obj.results.bindings[i].Latitude.value+","+json_obj.results.bindings[i].TimeStamp.value+ "\r\n";
+//  console.log(json_obj.results.bindings[i].coords.value);
+}
+//console.log (csvContent);
+var encodedUri = encodeURI(csvContent);
+window.open(encodedUri);
+
+
+var fields = Object.keys(json_obj.results.bindings)
+var replacer = function(key, value) { return value === null ? '' : value }
+var csv = json_obj.results.bindings.map(function(row){
+  return fields.map(function(fieldName){
+    return JSON.stringify(row[fieldName], replacer)
+  }).join(',')
+})
+csv.unshift(fields.join(',')) // add header column
+//console.log(csv.join('\r\n'))
+
+
+console.log (csvContent);
+postToDariahStorage(csvContent);
+//document.write("Your DARIAH-Storage Link: <a href="++"""Your resultset<br>"+csvContent+"<br>");
+}
+// create new file, get unique file id
+function postToDariahStorage(postdata) {
+       // re-set dsid
+       dsid="";
+       $.ajax({
+               url: 'https://geobrowser.de.dariah.eu/storage/',
+               type: 'POST',
+               contentType: 'text/csv',
+               data: postdata,
+               success: function(data, status, xhr) {
+                      document.write("Your DARIAH-Storage Link: <a href="+xhr.getResponseHeader('Location')+">"+xhr.getResponseHeader('Location')+"</a>");
+                      document.write("Your DARIAH GEO-Browser Link: <a href=https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+">https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+"</a>");
+                       console.log('loc: ' + xhr.getResponseHeader('Location'));
+                       var location = xhr.getResponseHeader('Location');
+                       dsid = location.substring(location.lastIndexOf('/')+1);
+                       //document.location.hash='id='+dsid;
+    // $('#dataId').text(dsid);
+//      $('#dataLoc').attr('href', 'http://ipedariah1.lsdf.kit.edu:8080/StorageImplementation-1.0-SNAPSHOT/' + dsid);
+    // $('#dataLoc').attr('href', storageURLhttp + dsid);
+               },
+               error: function (data, text, error) {
+                       showMessage('Error creating new file in DARIAH Storage because ' + text);
+                       console.log(data);
+                       console.log(text);
+                       console.log(error);
+               }
+       });
+}
+
+
+
+
+
+
+
+</script>
+</body>
+</html>
+
+<!--
+$.ajax({url: "https://www.wikidata.org/w/api.php?action=wbgetentities&titles=Victor%20Hugo&sites=frwikisource&format=json&normalize=true&origin=*", success: function(result){
+      console.log(result);
+    }});
+-->

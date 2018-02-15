@@ -1,0 +1,68 @@
+{
+  "name": "wikidata-sdk",
+  "version": "5.8.1",
+  "description": "A javascript tool-suite to query Wikidata and simplify its results",
+  "main": "lib/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "mocha",
+    "test-watch": "mocha --watch",
+    "lint": "standard",
+    "build": "browserify lib/index.js -s wdk -o dist/wikidata-sdk.js -t [ babelify --presets [ es2015 ] ]",
+    "minify": "uglifyjs dist/wikidata-sdk.js -c -m > dist/wikidata-sdk.min.js",
+    "dist": "npm run build && npm run minify",
+    "prepublishOnly": "./scripts/prepublish",
+    "update-bower": "./scripts/update_bower",
+    "bump-version": "./scripts/bump_version",
+    "update-toc": "./scripts/update_toc",
+    "add-fixture-entity": "./scripts/add_fixture_entity"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maxlath/wikidata-sdk"
+  },
+  "keywords": [
+    "wikidata",
+    "sdk",
+    "api",
+    "wdq",
+    "sparql",
+    "wdk"
+  ],
+  "author": "maxlath",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maxlath/wikidata-sdk/issues"
+  },
+  "homepage": "https://github.com/maxlath/wikidata-sdk",
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.1.0",
+    "doctoc": "^1.3.0",
+    "git-hooks": "^1.1.8",
+    "jsondepth": "^1.7.0",
+    "lodash": "^4.17.4",
+    "mocha": "^3.2.0",
+    "should": "^11.2.1",
+    "standard": "^9.0.2",
+    "uglify-js": "^2.8.20",
+    "wikidata-cli": "^4.8.1"
+  },
+  "engines": {
+    "node": ">= 6.4"
+  },
+  "dependencies": {},
+  "standard": {
+    "ignore": [
+      "dist"
+    ],
+    "globals": [
+      "it",
+      "describe"
+    ]
+  }
+}
