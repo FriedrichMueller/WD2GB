@@ -16,10 +16,11 @@
 <h1>Start your query</h1>
 <form >
  <textarea  id="SQLquery" style="width: 600px;height:150px"></textarea>
-
 </form>
 
   <button onclick="execute();">Get the results</button>
+
+<div id="out"></div>
 
 <script>
 const authorQid = 'Q535'
@@ -101,8 +102,10 @@ function Get(yourUrl){
 var json_obj = JSON.parse(Get(url));
 console.log(json_obj);
 
+//$.get('url')
+
 /// write to file
-var txtFile = "c:/fm/Projekte/SUB/Wikidata/Prototyp/test.txt";
+//var txtFile = "c:/fm/Projekte/SUB/Wikidata/Prototyp/test.txt";
 
 
 
@@ -116,16 +119,21 @@ var txtFile = "c:/fm/Projekte/SUB/Wikidata/Prototyp/test.txt";
 
 //let csvContent = "data:text/csv;charset=utf-8,";
 let csvContent = "";
-csvContent +="Name,Address,Description,Longitude,Latitude,TimeStamp"+ "\r\n";
-for (i = 0; i < json_obj.results.bindings.length/50; i++) {
+csvContent +='"Name","Address","Description","Longitude","Latitude","TimeStamp","TimeSpan:begin","TimeSpan:end","GettyID"'+ "\r\n";
+for (i = 0; i < json_obj.results.bindings.length; i++) {
 //console.log(json_obj.results);
 //csvContent +=json_obj.results.bindings[i].itemLabel.value+","+json_obj.results.bindings[i].coords.value+ "\r\n";
-  csvContent +=json_obj.results.bindings[i].Name.value+","+json_obj.results.bindings[i].Address.value+","+"-"+","+json_obj.results.bindings[i].Longitude.value+","+json_obj.results.bindings[i].Latitude.value+","+json_obj.results.bindings[i].TimeStamp.value+ "\r\n";
+  csvContent  +='"'+json_obj.results.bindings[i].Name.value+'","'
+              +'"'+json_obj.results.bindings[i].Address.value+'",'
+              +'"'+json_obj.results.bindings[i].Description.value+'",'
+              +'"'+json_obj.results.bindings[i].Longitude.value+'",'
+              +'"'+json_obj.results.bindings[i].Latitude.value+'",'
+              +'"'+json_obj.results.bindings[i].TimeStamp.value+ '","","",""\r\n';
 //  console.log(json_obj.results.bindings[i].coords.value);
 }
 //console.log (csvContent);
-var encodedUri = encodeURI(csvContent);
-window.open(encodedUri);
+//var encodedUri = encodeURI(csvContent);
+//window.open(encodedUri);
 
 
 var fields = Object.keys(json_obj.results.bindings)
@@ -153,11 +161,17 @@ function postToDariahStorage(postdata) {
                contentType: 'text/csv',
                data: postdata,
                success: function(data, status, xhr) {
-                      document.write("Your DARIAH-Storage Link: <a href="+xhr.getResponseHeader('Location')+">"+xhr.getResponseHeader('Location')+"</a>");
-                      document.write("Your DARIAH GEO-Browser Link: <a href=https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+">https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+"</a>");
+                      //document.write();
+                      //document.write();
+                       $('#out').append("<p>Your DARIAH-Storage Link: <a href="+xhr.getResponseHeader('Location')+">"+xhr.getResponseHeader('Location')+"</a></p>")
+                        $('#out').append("Your DARIAH GEO-Browser Link: <a href=https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+">https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+"</a>");
+
+
                        console.log('loc: ' + xhr.getResponseHeader('Location'));
                        var location = xhr.getResponseHeader('Location');
                        dsid = location.substring(location.lastIndexOf('/')+1);
+
+                        $('#out').append("<p>Your Edit Link: <a href='https://geobrowser.de.dariah.eu/edit#id="+dsid+"'>edit</a></p>");
                        //document.location.hash='id='+dsid;
     // $('#dataId').text(dsid);
 //      $('#dataLoc').attr('href', 'http://ipedariah1.lsdf.kit.edu:8080/StorageImplementation-1.0-SNAPSHOT/' + dsid);
