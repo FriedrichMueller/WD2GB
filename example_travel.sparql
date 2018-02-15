@@ -1,0 +1,32 @@
+#Map of places mentioned in travel stories with text in French accessible online before 1900
+SELECT DISTINCT  ?Description ?Address ?Name  ?Latitude ?Longitude (year(?dateCreation) as ?TimeStamp) WHERE{
+  ?Name wdt:P136 wd:Q1164267 .    
+  ?Name  wdt:P31 wd:Q571 .        
+  
+  OPTIONAL{
+    ?Name wdt:P50 ?auteur .       
+  }
+  
+    ?Name wdt:P571 ?dateCreation.          
+  
+ 
+  ?Name  wdt:P840 ?lieu . 
+   # lieu de l'action
+  MINUS {?Name  wdt:P840 wd:Q933} 
+  ?lieu p:P625 ?coord.        
+  ?coord psv:P625 ?coordinate_node.
+  ?coordinate_node wikibase:geoLatitude ?Latitude.
+  ?coordinate_node wikibase:geoLongitude ?Longitude.
+ 
+ 
+  {
+    ?Name wdt:P953 ?Description .       
+    ?Name wdt:P407 wd:Q150        
+  }UNION{
+    ?ed wdt:P629 ?Name .          
+    ?ed wdt:P953 ?Name .          
+    ?ed wdt:P407 wd:Q150          
+  }
+
+Filter (year(?dateCreation)< 1900 )
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". ?lieu rdfs:label ?Address .  }}  
