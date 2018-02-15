@@ -1,3 +1,5 @@
+# Template for queries
+# Attributes Name,Address,Description,Longitude,Latitude,TimeStamp are necessary for Geo-Browser usage
 SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?inception) as ?TimeStamp) 
 WHERE {
   SERVICE wikibase:label { 
@@ -7,7 +9,7 @@ WHERE {
     ?place rdfs:label ?Address.
   }
 
-  # select yout items here
+  # select your items here
   ?item ...
 
   ?item wdt:P740 ?place.
