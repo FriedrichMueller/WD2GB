@@ -1,0 +1,23 @@
+SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?inception) as ?TimeStamp) 
+WHERE {
+  SERVICE wikibase:label { 
+    bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". 
+    ?item rdfs:label ?Name .
+    ?item schema:description ?Description .
+    ?place rdfs:label ?Address.
+  }
+
+  # select yout items here
+  ?item ...
+
+  ?item wdt:P740 ?place.
+  #/replace  
+
+  ?place p:P625 ?coordinate.
+  ?coordinate psv:P625 ?coordinate_node.
+  ?coordinate_node wikibase:geoLatitude ?Latitude.
+  ?coordinate_node wikibase:geoLongitude ?Longitude.
+  # choose a date property here 
+  ?item wdt:P571 ?inception.
+}
+

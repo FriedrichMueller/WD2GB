@@ -14,8 +14,14 @@
 <body>
 
 <h1>Start your query</h1>
+
+<select id="chooser">
+  <option value="empty">Empty Template</option>
+  <option value="punk">Punkbands, with inception year and city</option>
+</select>
+
 <form >
- <textarea  id="SQLquery" style="width: 600px;height:150px"></textarea>
+ <textarea id="SQLquery" style="width: 600px;height:250px"></textarea>
 </form>
 
   <button onclick="execute();">Get the results</button>
@@ -43,24 +49,25 @@ WHERE {
 ORDER BY ?itemLabel`
 */
 
-$('#SQLquery').val("SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?inception) as ?TimeStamp)"+
-"WHERE {"+
-  "SERVICE wikibase:label {"+
-    "bd:serviceParam wikibase:language \"[AUTO_LANGUAGE],en\"."+
-    "?band rdfs:label ?Name ."+
-    "?band schema:description ?Description ."+
-    "?place rdfs:label ?Address."+
-  "}"+
-  "?band wdt:P136 wd:Q3071."+
-  "?band wdt:P31 wd:Q215380."+
-  "?band wdt:P740 ?place."+
-  "?place p:P625 ?coordinate."+
-  "?coordinate psv:P625 ?coordinate_node."+
-  "?coordinate_node wikibase:geoLatitude ?Latitude."+
-  "?coordinate_node wikibase:geoLongitude ?Longitude."+
-  "?band wdt:P571 ?inception."+
+// load emtpy template on load
+$( document ).ready(function() {
+    loadQueryTemplate('empty');
+});
 
-"}");
+$('#chooser').change( function() { 
+  loadQueryTemplate(this.value); 
+});
+
+function loadQueryTemplate(name) {
+  $.ajax({
+    type: 'GET',
+    url: './example_'+name+'.sparql',
+    dataType: 'text'
+  }).done( (data) => {
+    console.log('d: ', data);
+    $('#SQLquery').val(data);
+  });
+}
 
 function execute (){
 
