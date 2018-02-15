@@ -123,9 +123,9 @@ csvContent +='"Name","Address","Description","Longitude","Latitude","TimeStamp",
 for (i = 0; i < json_obj.results.bindings.length; i++) {
 //console.log(json_obj.results);
 //csvContent +=json_obj.results.bindings[i].itemLabel.value+","+json_obj.results.bindings[i].coords.value+ "\r\n";
-  csvContent  +='"'+json_obj.results.bindings[i].Name.value+'","'
+  csvContent  +='"'+json_obj.results.bindings[i].Name.value+'",'
               +'"'+json_obj.results.bindings[i].Address.value+'",'
-              +'"'+json_obj.results.bindings[i].Description.value+'",'
+              +'"'+json_obj.results.bindings[i].Name.value+'",'
               +'"'+json_obj.results.bindings[i].Longitude.value+'",'
               +'"'+json_obj.results.bindings[i].Latitude.value+'",'
               +'"'+json_obj.results.bindings[i].TimeStamp.value+ '","","",""\r\n';
