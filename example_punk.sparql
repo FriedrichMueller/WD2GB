@@ -15,4 +15,4 @@ WHERE {
   ?coordinate_node wikibase:geoLongitude ?Longitude.
   ?band wdt:P571 ?inception.
 }
-
+LIMIT 100
