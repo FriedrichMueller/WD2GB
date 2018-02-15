@@ -7,7 +7,7 @@ Query Wikidata with SPARQL - Reuse your data with the DARIAH-Storage-Service and
 ### How to use:
 
 * Put in your SPARQL to retrieve all necessary information for the Geo-browser visualization  
-* 'SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?Time) as ?TimeStamp)'
+* You need this form:'SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?Time) as ?TimeStamp)' in order to achieve visualization results. (See also 'empty template')
 * You can reuse the empty template as a starting point for your query.
 * With click on 'Get the results' button you get your download, visualization and edit link of your query results 
 
