@@ -9,8 +9,8 @@
 </head>
 <body>
 
-<h1>Start your query</h1>
-
+<h1>Wikidata to Geo-Browser</h1>
+Template and Examples:
 <select id="chooser">
   <option value="empty">Empty Template</option>
   <option value="punk">Punkbands, with inception year and city</option>
@@ -153,7 +153,7 @@ csv.unshift(fields.join(',')) // add header column
 
 console.log (csvContent);
 postToDariahStorage(csvContent);
-//document.write("Your DARIAH-Storage Link: <a href="++"""Your resultset<br>"+csvContent+"<br>");
+//document.write("Your DARIAH-Storage Link (Download CSV): <a href="++"""Your resultset<br>"+csvContent+"<br>");
 }
 // create new file, get unique file id
 function postToDariahStorage(postdata) {
@@ -168,7 +168,7 @@ function postToDariahStorage(postdata) {
                       //document.write();
                       //document.write();
                        $('#out').append("<p>Your DARIAH-Storage Link: <a href="+xhr.getResponseHeader('Location')+">"+xhr.getResponseHeader('Location')+"</a></p>")
-                        $('#out').append("Your DARIAH GEO-Browser Link: <a href=https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+">https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+"</a>");
+                        $('#out').append("Your DARIAH GEO-Browser Link (Visualization): <a href=https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+">https://geobrowser.de.dariah.eu/?csv1="+xhr.getResponseHeader('Location')+"</a>");
 
 
                        console.log('loc: ' + xhr.getResponseHeader('Location'));

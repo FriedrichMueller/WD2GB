@@ -4,7 +4,7 @@
 Query Wikidata with SPARQL - Reuse your data with the DARIAH-Storage-Service and explore spatio-temporal relations with the Geo-Browser.
 
 
-How to use:
+###How to use:
 
 *Put in your SPARQL to retrieve all necessary information for the Geo-browser visualization  
 *'SELECT DISTINCT ?Name ?Address ?Description ?Longitude ?Latitude (year(?Time) as ?TimeStamp)'
@@ -13,7 +13,8 @@ How to use:
 
 
 
-
+### Demo:
+https://mueller273.pages.gwdg.de/WD2GB/
 
 
 
